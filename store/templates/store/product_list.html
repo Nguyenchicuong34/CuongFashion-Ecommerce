@@ -1,0 +1,77 @@
+﻿{% extends 'store/base.html' %}
+
+{% block content %}
+
+<div class="container mt-3 mb-4">
+    <span class="text-muted fw-bold"><i class="fas fa-fire text-danger"></i> Xu hướng tìm kiếm:</span>
+    {% for item in top_keywords %}
+    <a href="{% url 'product_list' %}?q={{ item.query }}" class="badge bg-light text-dark text-decoration-none border ms-1">
+        {{ item.query }}
+    </a>
+    {% empty %}
+    <span class="text-muted small">Chưa có dữ liệu</span>
+    {% endfor %}
+</div>
+
+{% if not query and not current_category %}
+<div class="position-relative mb-5 text-center text-white rounded-3 overflow-hidden shadow"
+     style="background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover; background-position: center; height: 400px;">
+
+    <div style="background-color: rgba(0,0,0,0.5); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h1 class="display-3 fw-bold">PHONG CÁCH CỦA BẠN</h1>
+        <p class="fs-4 mb-4">Bộ sưu tập Thời trang Nam & Nữ Cao cấp 2026</p>
+        <a href="#collection" class="btn btn-danger btn-lg px-5 rounded-pill shadow">MUA NGAY</a>
+    </div>
+</div>
+
+{% elif current_category %}
+<div class="p-4 mb-4 bg-light rounded-3 border-start border-5 border-danger">
+    <h2 class="fw-bold m-0">Danh mục: <span class="text-danger">{{ current_category }}</span></h2>
+</div>
+
+{% else %}
+<div class="p-4 mb-4 bg-light rounded-3">
+    <h3 class="m-0">Kết quả tìm kiếm cho: "<span class="text-danger">{{ query }}</span>"</h3>
+</div>
+{% endif %}
+
+<div class="row" id="collection">
+    {% for product in products %}
+    <div class="col-6 col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 product-card">
+
+            <div class="position-relative overflow-hidden">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+                {% else %}
+                <div style="height: 250px; background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-tshirt fa-3x text-secondary"></i>
+                </div>
+                {% endif %}
+
+                <span class="position-absolute top-0 start-0 bg-danger text-white badge m-2">Hot</span>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-bold text-dark text-truncate">{{ product.name }}</h5>
+                <p class="small text-muted mb-1">{{ product.category }}</p>
+                <h4 class="text-danger fw-bold mb-3">{{ product.price }} VND</h4>
+
+                <div class="mt-auto d-flex gap-2">
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-dark w-50">Chi tiết</a>
+                    <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-danger w-50"><i class="fas fa-cart-plus"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+        <p class="lead">Chưa có sản phẩm nào phù hợp.</p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary">Xem tất cả sản phẩm</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

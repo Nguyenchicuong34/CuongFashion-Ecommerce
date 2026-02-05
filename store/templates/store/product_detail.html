@@ -1,0 +1,67 @@
+﻿{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="img-fluid rounded shadow w-100" alt="{{ product.name }}">
+        {% else %}
+        <div class="bg-light d-flex align-items-center justify-content-center" style="height:300px;">Chưa có ảnh</div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-7">
+        <h1 class="fw-bold">{{ product.name }}</h1>
+        <h2 class="text-danger fw-bold my-3">{{ product.price }} VND</h2>
+
+        <div class="card bg-light border-0 p-3 mb-4">
+            <p>{{ product.description }}</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'buy_now' product.pk %}" class="btn btn-danger btn-lg px-4">MUA NGAY</a>
+            <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-outline-dark btn-lg px-4">Thêm vào giỏ</a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-5">
+
+{% if recommendations %}
+<div class="mb-5">
+    <h3>Có thể bạn cũng thích</h3>
+    <div class="row">
+        {% for item in recommendations %}
+        <div class="col-6 col-md-3">
+            <div class="card h-100">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h6><a href="{% url 'product_detail' item.pk %}">{{ item.name }}</a></h6>
+                    <p class="text-danger fw-bold">{{ item.price }} VND</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %} <div class="row">
+    <div class="col-md-8">
+        <h3>Đánh giá khách hàng</h3>
+        <div class="card mb-4 p-3">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+            </form>
+        </div>
+        {% for review in reviews %}
+        <div class="border-bottom mb-3 pb-2">
+            <strong>{{ review.author }}</strong> - <span class="text-warning">{{ review.rating }} sao</span>
+            <p>{{ review.comment }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
